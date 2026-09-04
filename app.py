@@ -16,7 +16,7 @@ if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
-    st.title("🔒 효주와 현우의 일본어 공부 도우미")
+    st.title("🔒 이효주와 현우의 일본어 공부 도우미")
     pwd_input = st.text_input("접속 비밀번호를 입력하세요", type="password")
     if st.button("접속하기", use_container_width=True):
         if pwd_input == ACCESS_PASSWORD:
@@ -38,7 +38,6 @@ st.caption("텍스트를 입력하거나 사진을 찍어 단어 및 문법을 �
 # 4. 입력 방식 선택 (텍스트 / 사진)
 tab1, tab2 = st.tabs(["📝 텍스트 입력", "📷 사진 업로드/촬영"])
 
-# 양방향(일->한, 한->일) 분석 프롬프트 지시문
 prompt_instruction = """
 당신은 친절하고 전문적인 일본어 및 한국어 학습 도우미입니다.
 전달받은 텍스트나 이미지 속 내용을 분석하여 아래 규칙에 따라 한국어로 정돈해서 출력해 주세요.
@@ -73,8 +72,8 @@ if st.button("✨ 상세 분석하기", type="primary", use_container_width=True
     else:
         with st.spinner("AI가 단어와 문법을 분석 중입니다..."):
             try:
-                # 최신 지원 모델 사용
-                model = genai.GenerativeModel('gemini-1.5-flash-latest')
+                # 표준 모델명으로 호출
+                model = genai.GenerativeModel('gemini-1.5-flash')
                 
                 if uploaded_image is not None:
                     img = Image.open(uploaded_image)
