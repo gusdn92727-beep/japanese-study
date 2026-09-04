@@ -362,7 +362,6 @@ with tab5:
                     st.session_state.wrong_notes.pop(idx)
                     save_data({"vocab_list": st.session_state.vocab_list, "wrong_notes": st.session_state.wrong_notes})
                     st.rerun()
-```eof
 
 ### ✨ 추가된 기능 핵심 요약
 1. **검색 후 바로 저장**: 단어를 검색하고 분석 결과를 확인한 뒤, 스크롤을 살짝만 내리면 방금 검색한 단어가 자동으로 채워진 저장 양식이 나옵니다.
