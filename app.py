@@ -16,7 +16,7 @@ if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
-    st.title("🔒 이효주와 현우의 일본어 공부 도우미")
+    st.title("🔒 효주와 현우의 일본어 공부 도우미")
     pwd_input = st.text_input("접속 비밀번호를 입력하세요", type="password")
     if st.button("접속하기", use_container_width=True):
         if pwd_input == ACCESS_PASSWORD:
@@ -27,33 +27,39 @@ if not st.session_state.authenticated:
     st.stop()
 
 # 3. Gemini API 설정
-# 아래 큰따옴표 안에 발급받으신 Gemini API 키를 넣으세요!
 MY_API_KEY = "AQ.Ab8RN6KvkSApFltbjfoBGzd1S5KAd4dWJiR0PwWAbe7Zarz7iA"
 
 if MY_API_KEY and MY_API_KEY != "여기에_Gemini_API_키를_넣으세요":
     genai.configure(api_key=MY_API_KEY)
 
-st.title("🇯🇵 맞춤형 일본어 학습 도우미")
+st.title("🇯🇵 맞춤형 일본어/한국어 학습 도우미")
 st.caption("텍스트를 입력하거나 사진을 찍어 단어 및 문법을 분석해보세요.")
 
 # 4. 입력 방식 선택 (텍스트 / 사진)
 tab1, tab2 = st.tabs(["📝 텍스트 입력", "📷 사진 업로드/촬영"])
 
+# 양방향(일->한, 한->일) 분석 프롬프트 지시문
 prompt_instruction = """
-너는 친절하고 전문적인 일본어 학습 도우미야.
-전달받은 일본어 텍스트나 이미지 속 일본어를 분석해서 아래 양식에 맞게 한국어로 정돈해서 출력해 줘.
+당신은 친절하고 전문적인 일본어 및 한국어 학습 도우미입니다.
+전달받은 텍스트나 이미지 속 내용을 분석하여 아래 규칙에 따라 한국어로 정돈해서 출력해 주세요.
 
-1. [원문 및 읽는 법]: 한자 위에 후리가나(히라가나 읽기)와 한글 발음 표시
-2. [단어 및 JLPT 난이도 분석]: 주요 단어 추출, 한자 음/훈독, JLPT 급수(N1~N5) 표기, 뜻 풀이
-3. [핵심 문법 포인트]: 문장에 사용된 주요 문법 요소 및 어조 설명
-4. [활용 예문]: 해당 단어나 문법을 활용한 쉬운 예문 2개 (한글 번역 포함)
+1. **입력 내용이 한국어인 경우:**
+   - 자연스럽고 표현력 있는 일본어로 번역해 주세요.
+   - 번역된 일본어 한자 위에 후리가나(히라가나 읽기)와 한글 발음을 표기해 주세요.
+   - 문장에 쓰인 주요 단어와 문법 포인트를 나누어 친절하게 설명해 주세요.
+
+2. **입력 내용이 일본어(텍스트 또는 이미지)인 경우:**
+   - [원문 및 읽는 법]: 한자 위에 후리가나(히라가나 읽기)와 한글 발음 표시
+   - [단어 및 JLPT 난이도 분석]: 주요 단어 추출, 한자 음/훈독, JLPT 급수(N1~N5) 표기, 뜻 풀이
+   - [핵심 문법 포인트]: 문장에 사용된 주요 문법 요소 및 어조 설명
+   - [활용 예문]: 해당 단어나 문법을 활용한 쉬운 예문 2개 (한글 번역 포함)
 """
 
 selected_text = ""
 uploaded_image = None
 
 with tab1:
-    selected_text = st.text_area("분석할 일본어 문장이나 단어를 입력하세요", height=120)
+    selected_text = st.text_area("분석할 일본어 또는 한국어 문장/단어를 입력하세요", height=120)
 
 with tab2:
     uploaded_image = st.file_uploader("이미지를 업로드하거나 카메라로 찍으세요", type=["jpg", "jpeg", "png"])
@@ -61,13 +67,14 @@ with tab2:
         st.image(uploaded_image, caption="업로드된 이미지", use_column_width=True)
 
 # 5. 분석 실행
-if st.button("✨ 일본어 상세 분석하기", type="primary", use_container_width=True):
+if st.button("✨ 상세 분석하기", type="primary", use_container_width=True):
     if MY_API_KEY == "여기에_Gemini_API_키를_넣으세요" or not MY_API_KEY:
-        st.error("27번째 줄의 MY_API_KEY에 본인의 Gemini API 키를 넣어주세요!")
+        st.error("MY_API_KEY에 본인의 Gemini API 키를 넣어주세요!")
     else:
-        with st.spinner("AI가 일본어 단어와 문법을 분석 중입니다..."):
+        with st.spinner("AI가 단어와 문법을 분석 중입니다..."):
             try:
-                model = genai.GenerativeModel('gemini-1.5-flash')
+                # 최신 지원 모델 사용
+                model = genai.GenerativeModel('gemini-1.5-flash-latest')
                 
                 if uploaded_image is not None:
                     img = Image.open(uploaded_image)
