@@ -8,7 +8,7 @@ import os
 
 # 1. 페이지 기본 설정
 st.set_page_config(
-    page_title="이효주와 현우의 일본어 공부 도우미",
+    page_title="효주와 현우의 일본어 공부 도우미",
     page_icon="🇯🇵",
     layout="centered"
 )
@@ -50,7 +50,7 @@ if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
-    st.title("🔒 이효주와 현우의 일본어 공부 도우미")
+    st.title("🔒 효주와 현우의 일본어 공부 도우미")
     pwd_input = st.text_input("접속 비밀번호를 입력하세요", type="password")
     if st.button("접속하기", use_container_width=True):
         if pwd_input == ACCESS_PASSWORD:
