@@ -8,7 +8,7 @@ import os
 
 # 1. 페이지 기본 설정
 st.set_page_config(
-    page_title="효주와 현우의 일본어 공부 도우미",
+    page_title="이효주와 현우의 일본어 공부 도우미",
     page_icon="🇯🇵",
     layout="centered"
 )
@@ -50,7 +50,7 @@ if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
-    st.title("🔒 효주와 현우의 일본어 공부 도우미")
+    st.title("🔒 이효주와 현우의 일본어 공부 도우미")
     pwd_input = st.text_input("접속 비밀번호를 입력하세요", type="password")
     if st.button("접속하기", use_container_width=True):
         if pwd_input == ACCESS_PASSWORD:
@@ -362,8 +362,3 @@ with tab5:
                     st.session_state.wrong_notes.pop(idx)
                     save_data({"vocab_list": st.session_state.vocab_list, "wrong_notes": st.session_state.wrong_notes})
                     st.rerun()
-
-### ✨ 추가된 기능 핵심 요약
-1. **검색 후 바로 저장**: 단어를 검색하고 분석 결과를 확인한 뒤, 스크롤을 살짝만 내리면 방금 검색한 단어가 자동으로 채워진 저장 양식이 나옵니다.
-2. **단어장 자동 선택**: 현재 선택된 공부 모드(현우/효주)에 맞춰 기본 단어장이 알아서 지정됩니다.
-3. **영구 저장 연동**: 여기서 추가한 단어도 즉시 `study_data.json` 파일에 저장되어 앱을 새로고침하거나 나중에 다시 들어와도 안 지워집니다!
