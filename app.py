@@ -1,5 +1,5 @@
 import streamlit as st
-import google.generativeai as genai
+from google import genai
 from PIL import Image
 
 # 1. 페이지 기본 설정
@@ -10,13 +10,13 @@ st.set_page_config(
 )
 
 # 2. 비밀번호 보안 기능 (둘만 접속 가능)
-ACCESS_PASSWORD = "0487"  # 원하는 비밀번호로 변경하세요!
+ACCESS_PASSWORD = "0487"
 
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
-    st.title("🔒 이효주와 현우의 일본어 공부 도우미")
+    st.title("🔒 효주와 현우의 일본어 공부 도우미")
     pwd_input = st.text_input("접속 비밀번호를 입력하세요", type="password")
     if st.button("접속하기", use_container_width=True):
         if pwd_input == ACCESS_PASSWORD:
@@ -29,13 +29,10 @@ if not st.session_state.authenticated:
 # 3. Gemini API 설정
 MY_API_KEY = "AQ.Ab8RN6KvkSApFltbjfoBGzd1S5KAd4dWJiR0PwWAbe7Zarz7iA"
 
-if MY_API_KEY and MY_API_KEY != "여기에_Gemini_API_키를_넣으세요":
-    genai.configure(api_key=MY_API_KEY)
-
 st.title("🇯🇵 맞춤형 일본어/한국어 학습 도우미")
 st.caption("텍스트를 입력하거나 사진을 찍어 단어 및 문법을 분석해보세요.")
 
-# 4. 입력 방식 선택 (텍스트 / 사진)
+# 4. 입력 방식 선택
 tab1, tab2 = st.tabs(["📝 텍스트 입력", "📷 사진 업로드/촬영"])
 
 prompt_instruction = """
@@ -67,19 +64,24 @@ with tab2:
 
 # 5. 분석 실행
 if st.button("✨ 상세 분석하기", type="primary", use_container_width=True):
-    if MY_API_KEY == "여기에_Gemini_API_키를_넣으세요" or not MY_API_KEY:
-        st.error("MY_API_KEY에 본인의 Gemini API 키를 넣어주세요!")
+    if not MY_API_KEY:
+        st.error("API 키를 확인해 주세요!")
     else:
         with st.spinner("AI가 단어와 문법을 분석 중입니다..."):
             try:
-                # 404 방지를 위해 호환성이 보장된 gemini-pro / gemini-pro-vision 지정
+                client = genai.Client(api_key=MY_API_KEY)
+                
                 if uploaded_image is not None:
-                    model = genai.GenerativeModel('gemini-pro-vision')
                     img = Image.open(uploaded_image)
-                    response = model.generate_content([prompt_instruction, img])
+                    response = client.models.generate_content(
+                        model='gemini-2.5-flash',
+                        contents=[prompt_instruction, img]
+                    )
                 elif selected_text.strip():
-                    model = genai.GenerativeModel('gemini-pro')
-                    response = model.generate_content(f"{prompt_instruction}\n\n[분석할 텍스트]:\n{selected_text}")
+                    response = client.models.generate_content(
+                        model='gemini-2.5-flash',
+                        contents=f"{prompt_instruction}\n\n[분석할 텍스트]:\n{selected_text}"
+                    )
                 else:
                     st.warning("분석할 텍스트를 입력하거나 이미지를 올려주세요.")
                     st.stop()
