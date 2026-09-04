@@ -72,13 +72,13 @@ if st.button("✨ 상세 분석하기", type="primary", use_container_width=True
     else:
         with st.spinner("AI가 단어와 문법을 분석 중입니다..."):
             try:
-                # 표준 모델명으로 호출
-                model = genai.GenerativeModel('gemini-1.5-flash')
-                
+                # 404 방지를 위해 호환성이 보장된 gemini-pro / gemini-pro-vision 지정
                 if uploaded_image is not None:
+                    model = genai.GenerativeModel('gemini-pro-vision')
                     img = Image.open(uploaded_image)
                     response = model.generate_content([prompt_instruction, img])
                 elif selected_text.strip():
+                    model = genai.GenerativeModel('gemini-pro')
                     response = model.generate_content(f"{prompt_instruction}\n\n[분석할 텍스트]:\n{selected_text}")
                 else:
                     st.warning("분석할 텍스트를 입력하거나 이미지를 올려주세요.")
