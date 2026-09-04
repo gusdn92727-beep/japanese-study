@@ -4,7 +4,7 @@ from PIL import Image
 
 # 1. 페이지 기본 설정
 st.set_page_config(
-    page_title="이효주와 현우의 일본어 공부 도우미",
+    page_title="효주와 현우의 일본어 공부 도우미",
     page_icon="🇯🇵",
     layout="centered"
 )
