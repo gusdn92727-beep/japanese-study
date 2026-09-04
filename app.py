@@ -74,12 +74,12 @@ if st.button("✨ 상세 분석하기", type="primary", use_container_width=True
                 if uploaded_image is not None:
                     img = Image.open(uploaded_image)
                     response = client.models.generate_content(
-                        model='gemini-2.5-flash',
+                        model='gemini-3.6-flash',
                         contents=[prompt_instruction, img]
                     )
                 elif selected_text.strip():
                     response = client.models.generate_content(
-                        model='gemini-2.5-flash',
+                        model='gemini-3.6-flash',
                         contents=f"{prompt_instruction}\n\n[분석할 텍스트]:\n{selected_text}"
                     )
                 else:
